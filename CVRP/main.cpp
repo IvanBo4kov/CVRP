@@ -1,5 +1,9 @@
 #include <cstdint>
 #include <vector>
+#include <fstream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 #include "google/protobuf/duration.pb.h"
 #include "ortools/constraint_solver/routing.h"
@@ -33,7 +37,7 @@ struct DataModel {
     std::vector<std::vector<double>> distance_matrix;
     std::vector<int64_t> demands;
     std::vector<int64_t> vehicle_capacities;
-    int num_vehicles = 0;
+    int64_t num_vehicles = 0;
     RoutingIndexManager::NodeIndex depot{0};
 };
 
@@ -43,30 +47,34 @@ void PrintSolution(const DataModel& data, const RoutingIndexManager& manager,
   int64_t total_load{0};
   for (int vehicle_id = 0; vehicle_id < data.num_vehicles; ++vehicle_id) {
     int64_t index = routing.Start(vehicle_id);
-    LOG(INFO) << "Route for Vehicle " << vehicle_id << ":";
+   // LOG(INFO) << "Route for Vehicle " << vehicle_id << ":";
     int64_t route_distance{0};
     int64_t route_load{0};
     std::stringstream route;
     while (routing.IsEnd(index) == false) {
       int64_t node_index = manager.IndexToNode(index).value();
       route_load += data.demands[node_index];
-      route << node_index << " Load(" << route_load << ") -> ";
+     // route << node_index << " Load(" << route_load << ") -> ";
       int64_t previous_index = index;
       index = solution.Value(routing.NextVar(index));
       route_distance += routing.GetArcCostForVehicle(previous_index, index,
                                                      int64_t{vehicle_id});
     }
-    LOG(INFO) << route.str() << manager.IndexToNode(index).value();
-    LOG(INFO) << "Distance of the route: " << route_distance << "m";
-    LOG(INFO) << "Load of the route: " << route_load;
+      /*
+       LOG(INFO) << route.str() << manager.IndexToNode(index).value();
+       LOG(INFO) << "Distance of the route: " << route_distance << "m";
+       LOG(INFO) << "Load of the route: " << route_load;
+       */
     total_distance += route_distance;
     total_load += route_load;
   }
-  LOG(INFO) << "Total distance of all routes: " << total_distance << "m";
-  LOG(INFO) << "Total load of all routes: " << total_load;
-  LOG(INFO) << "";
-  LOG(INFO) << "Advanced usage:";
-  LOG(INFO) << "Problem solved in " << routing.solver()->wall_time() << "ms";
+  std::cout << total_distance << std::endl;     // LOG(INFO) before
+ /*
+    LOG(INFO) << "Total load of all routes: " << total_load;
+    LOG(INFO) << "";
+    LOG(INFO) << "Advanced usage:";
+    LOG(INFO) << "Problem solved in " << routing.solver()->wall_time() << "ms";
+  */
 }
 
 void VrpCapacity(DataModel init_data) {
@@ -106,26 +114,37 @@ void VrpCapacity(DataModel init_data) {
 }
 
 int main(int argc, char** argv) {
-    int64_t N, num_vehicles_one, vehicle_capacities_one;
-    std::cin >> N >> num_vehicles_one >> vehicle_capacities_one;
-    operations_research::DataModel data;
-    for (int i = 0; i < num_vehicles_one; i++) {
-        data.vehicle_capacities.push_back(vehicle_capacities_one);
+    std::string path = "/Users/ivanbockov/vrp_tests";
+           auto it = fs::directory_iterator(path);
+           std::vector<fs::path> array_path;
+           copy_if(fs::begin(it), fs::end(it), std::back_inserter(array_path),
+               [](const auto& entry) {
+                   return fs::is_regular_file(entry);
+           });
+    for (auto& p : array_path) {
+        std::ifstream fin;
+        fin.open(p.string());
+        std::cout << p.string() << std::endl;
+        int64_t N, num_vehicles_one, vehicle_capacities_one;
+        fin >> N >> num_vehicles_one >> vehicle_capacities_one;
+        std::vector<int64_t> buffer(num_vehicles_one, vehicle_capacities_one);
+        operations_research::DataModel data;
+        data.vehicle_capacities = buffer;
+        data.num_vehicles = num_vehicles_one;
+        std::vector<Point> points(N);
+        std::vector<int64_t> buf(N);
+        for (int i = 0; i < N; i++) {
+            int64_t demand;
+            Point p;
+            fin >> demand >> p.x >> p.y;
+            points[i] = p;
+            buf[i] = demand;
+        }
+        std::vector<std::vector<double> > matrix(N, std::vector<double>(N));
+        readInput(matrix, N, points);
+        data.demands = buf;
+        data.distance_matrix = matrix;
+        operations_research::VrpCapacity(data);
     }
-    data.num_vehicles = num_vehicles_one;
-    std::vector<Point> points(N);
-    std::vector<int64_t> buf(N);
-    for (int i = 0; i < N; i++) {
-        int64_t demand;
-        Point p;
-        std::cin >> demand >> p.x >> p.y;
-        points[i] = p;
-        buf[i] = demand;
-    }
-    std::vector<std::vector<double> > matrix(N, std::vector<double>(N));
-    readInput(matrix, N, points);
-    data.demands = buf;
-    data.distance_matrix = matrix;
-    operations_research::VrpCapacity(data);
     return EXIT_SUCCESS;
 }
