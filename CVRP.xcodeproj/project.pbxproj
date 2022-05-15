@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5CAC985C283137700082473F /* libortools.9.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CAC985A283137700082473F /* libortools.9.3.dylib */; };
 		5CAC985D283137700082473F /* libflatzinc.9.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CAC985B283137700082473F /* libflatzinc.9.3.dylib */; };
+		5CAC9874283173470082473F /* makefile in Sources */ = {isa = PBXBuildFile; fileRef = 5CAC9873283173470082473F /* makefile */; };
 		5CD34F482831225200165F58 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5CD34F472831225200165F58 /* main.cpp */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 		5CAC985A283137700082473F /* libortools.9.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libortools.9.3.dylib; path = "../OR-Tools/or-tools/lib/libortools.9.3.dylib"; sourceTree = "<group>"; };
 		5CAC985B283137700082473F /* libflatzinc.9.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libflatzinc.9.3.dylib; path = "../OR-Tools/or-tools/lib/libflatzinc.9.3.dylib"; sourceTree = "<group>"; };
 		5CAC987228316AF30082473F /* results.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = results.txt; sourceTree = "<group>"; };
+		5CAC9873283173470082473F /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; };
 		5CD34F442831225200165F58 /* CVRP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CVRP; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CD34F472831225200165F58 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -75,6 +77,7 @@
 		5CD34F462831225200165F58 /* CVRP */ = {
 			isa = PBXGroup;
 			children = (
+				5CAC9873283173470082473F /* makefile */,
 				5CD34F472831225200165F58 /* main.cpp */,
 			);
 			path = CVRP;
@@ -137,6 +140,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CAC9874283173470082473F /* makefile in Sources */,
 				5CD34F482831225200165F58 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
