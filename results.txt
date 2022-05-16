@@ -130,3 +130,7 @@
 737
 /Users/ivanbockov/vrp_tests/vrp_151_14_2
 3331
+/Users/ivanbockov/vrp_tests/vrp_31_9_1    mutable_time_limit = (60 sec)
+598
+/Users/ivanbockov/vrp_tests/vrp_200_16_2  mutable_time_limit = (300 sec)
+1337

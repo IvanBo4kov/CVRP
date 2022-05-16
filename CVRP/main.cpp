@@ -17,10 +17,10 @@ struct Point {
 };
 
 double dist(Point p1, Point p2) {
-    return sqrt((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y));
+    return sqrt(pow((p1.x - p2.x),2) + pow((p1.y - p2.y),2));
 }
 
-void readInput(std::vector<std::vector<double> >& matrix, const int& N, const std::vector<Point> points) {
+void readInput(std::vector<std::vector<double>>& matrix, int N, std::vector<Point>& points) {
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             if (i == j) {
@@ -107,14 +107,14 @@ void VrpCapacity(DataModel init_data) {
       FirstSolutionStrategy::PATH_CHEAPEST_ARC);
   search_parameters.set_local_search_metaheuristic(
       LocalSearchMetaheuristic::GUIDED_LOCAL_SEARCH);
-  search_parameters.mutable_time_limit()->set_seconds(1);
+  search_parameters.mutable_time_limit()->set_seconds(300);
   const Assignment* solution = routing.SolveWithParameters(search_parameters);
   PrintSolution(data, manager, routing, *solution);
 }
 }
 
 int main(int argc, char** argv) {
-    std::string path = "/Users/ivanbockov/vrp_tests";
+    std::string path = "/Users/ivanbockov/vrp_hard_test";
            auto it = fs::directory_iterator(path);
            std::vector<fs::path> array_path;
            copy_if(fs::begin(it), fs::end(it), std::back_inserter(array_path),
